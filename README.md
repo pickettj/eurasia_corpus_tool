@@ -8,3 +8,7 @@ Developing various methods for distant reading of Persianate texts.
 Python-based hosting packages:
 - [Streamlit](https://www.streamlit.io/)
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+
+Interactive Python Shell:
+- Run with `ipython3`, then `import`.
+  - or, do it all at once: `ipython3 -i -c"import text_deciphering_tool  as td"`
