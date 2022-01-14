@@ -4,13 +4,13 @@
 # # Text Deciphering Tool
 # James Pickett
 
-# In[139]:
+# In[120]:
 
 
 import pickle, re, nltk, os
 
 
-# In[140]:
+# In[121]:
 
 
 import numpy as np
@@ -19,7 +19,7 @@ import pandas as pd
 from pandas import DataFrame, Series
 
 
-# In[141]:
+# In[122]:
 
 
 # general function in Pandas to set maximum number of rows; otherwise only shows a few
@@ -27,7 +27,7 @@ from pandas import DataFrame, Series
 pd.set_option('display.max_rows', 300)
 
 
-# In[142]:
+# In[123]:
 
 
 #set home directory path
@@ -38,7 +38,7 @@ hdir = os.path.expanduser('~')
 # - Pickled corpora cleaned in text_cleaning_tokenizing (optional: run `text_cleaning_tokenizing.py` - may take a few minutes to execute)
 # - Corpora stats in corpora_statistics
 
-# In[143]:
+# In[124]:
 
 
 print ("run 'text_cleaning_tokenizing.py' to re-tokenize corpus")
@@ -46,16 +46,16 @@ print ("run 'text_cleaning_tokenizing.py' to re-tokenize corpus")
 
 # ### Help Function
 
-# In[241]:
+# In[197]:
 
 
 def tool_help ():
-    print ("Eurasia Corpus Tool: Functions and Explanation\n\n           \tlist_corpora: lists all of the sub-corpora options\n           \tfreq: returns the most likely terms matching the search term\n           \tindex_kwic: key word in context; optional arguments: 'category' to specify a specific corpus                   'exclusion=False' to also include the Persian literature corpus\n            \n\n\n"
+    print ("Eurasia Corpus Tool: Functions and Explanation\n\n           \ttool_help: lists functions\n           \tlist_corpora: lists all of the sub-corpora options\n           \tfreq: returns the most likely terms matching the search term\n           \tindex_kwic: key word in context; optional arguments: 'category' to specify a specific corpus                   'exclusion=False' to also include the Persian literature corpus\n           \tmulti_dic: searches through all of the dictionary corpuses for the term\n           \tdic_freq: searches through dictionary corpuses, returns most frequent term appearing in the text corpuses\n            \n\n\n"
           )
     
 
 
-# In[223]:
+# In[126]:
 
 
 #tool_help()
@@ -65,13 +65,13 @@ def tool_help ():
 # 
 # 
 
-# In[144]:
+# In[127]:
 
 
 pickle_path = hdir + "/Dropbox/Active_Directories/Digital_Humanities/Corpora/pickled_tokenized_cleaned_corpora"
 
 
-# In[230]:
+# In[128]:
 
 
 # import dataframe corpus
@@ -80,7 +80,7 @@ df_eurcorp = pd.read_csv (os.path.join(pickle_path,r'eurasia_corpus.csv'))
 #df_eurcorp.sample(5)
 
 
-# In[219]:
+# In[129]:
 
 
 def list_corpora():
@@ -90,7 +90,7 @@ def list_corpora():
 
 # ## Importing Datasets
 
-# In[159]:
+# In[130]:
 
 
 # dataset path
@@ -98,7 +98,7 @@ def list_corpora():
 ds_path = hdir + "/Dropbox/Active_Directories/Digital_Humanities/Datasets"
 
 
-# In[161]:
+# In[131]:
 
 
 # Von Melzer
@@ -106,14 +106,15 @@ meltzer = pd.read_csv(ds_path + "/von_melzer.csv")
 #meltzer.sample(5)
 
 
-# In[173]:
+# In[132]:
 
 
 dehkhoda = pd.read_csv(ds_path + "/dehkhoda_dictionary.csv", names=['Term', 'Definition'])
+dehkhoda = dehkhoda.rename(columns={'Term': 'Emic_Term'})
 #dehkhoda.sample(5)
 
 
-# In[162]:
+# In[133]:
 
 
 # Locations
@@ -121,37 +122,96 @@ locations = pd.read_csv(ds_path + '/exported_database_data/locations.csv', names
 # Social Roles
 roles = pd.read_csv(ds_path + '/exported_database_data/roles.csv', names=['UID', 'Term', 'Emic', 'Etic', 'Scope'])
 
+
+# In[134]:
+
+
 # Glossary
 glossary = pd.read_csv(ds_path + '/exported_database_data/glossary.csv', names=['UID', 'Term',                                                 'Eng_Term', 'Translation', 'Transliteration', 'Scope', 'Tags'])
+glossary = glossary.rename(columns={'Term': 'Emic_Term', 'Eng_Term':'Transliteration', 'Translation':'Definition'})
+#glossary.sample(5)
 
 
 # ## Dictionary Search Functions
 
-# In[216]:
+# In[135]:
+
+
+# simplify / standardize dictionaries
+
+simp_meltzer = meltzer.rename(columns={'Präs.-Stamm': 'Emic_Term', 'Transkription': 'Transcription', 'Deutsch':'Definition'})                .drop(['Volume', 'Unnamed: 2', 'Persisch',  'Bemerkung'], axis=1)
+simp_meltzer['Dataset']='meltzer'
+#simp_meltzer.sample(5)
+
+
+# In[136]:
+
+
+simp_dehkhoda = dehkhoda
+simp_dehkhoda['Dataset']='dehkhoda'
+
+
+# In[137]:
+
+
+simp_glossary = glossary
+simp_glossary['Dataset']='glossary'
+simp_glossary = simp_glossary.drop(['Transliteration'], axis=1)
+#simp_glossary.sample(5)
+
+
+# In[164]:
+
+
+concat_dics = pd.concat([simp_dehkhoda, simp_glossary, simp_meltzer], axis=0)
+#concat_dics.sample(5)
+
+
+# In[174]:
 
 
 def multi_dic (term):
-    query_mask = dehkhoda["Term"].str.contains(term, na=False)
-    query = dehkhoda[query_mask]
-    result = query.sample(5)
+    query_mask = concat_dics["Emic_Term"].str.contains(term, na=False)
+    query = concat_dics[query_mask]
+    result = query
+    
+    if len(result) > 50:
+        result = result.sample(50)
+    
     return (result)
 
 
-# In[231]:
+# In[173]:
 
 
-#multi_dic('د.رو')
+#multi_dic("دار")
 
 
-# In[232]:
+# In[140]:
+
+
+term = "چقر"
+query_mask = simp_glossary["Emic_Term"].str.contains(term, na=False)
+query1 = simp_glossary[query_mask]
+query1
+
+
+# In[141]:
+
+
+multi_dic('چقر')
+
+
+# In[142]:
 
 
 # ?? how to return multiple dataframes without losing the dataframe pretty format
+# ++ need to use concat function for this
 
 
 # ## Custom KWIC
 
-# In[187]:
+# In[143]:
 
 
 def index_kwic (term, category=None, exclusion=True):
@@ -176,13 +236,13 @@ def index_kwic (term, category=None, exclusion=True):
     
 
 
-# In[199]:
+# In[144]:
 
 
 #index_kwic('اژدها', exclusion = False)
 
 
-# In[218]:
+# In[145]:
 
 
 def kwic (term, category=None, exclusion=True):
@@ -214,7 +274,7 @@ def kwic (term, category=None, exclusion=True):
         
 
 
-# In[ ]:
+# In[146]:
 
 
 #kwic('اژ.ها$', exclusion=False)
@@ -222,19 +282,19 @@ def kwic (term, category=None, exclusion=True):
 
 # ## Frequency
 
-# In[111]:
+# In[147]:
 
 
 freq_dic = pd.value_counts(df_eurcorp.Token).to_frame().reset_index()
 
 
-# In[238]:
+# In[176]:
 
 
-#freq_dic.sample(5)
+freq_dic.sample(5)
 
 
-# In[236]:
+# In[149]:
 
 
 def freq (term):
@@ -244,22 +304,53 @@ def freq (term):
     return (result)
 
 
-# In[240]:
+# In[150]:
 
 
 #freq("اژد.ا")
 
 
-# In[239]:
+# In[189]:
 
 
-# ++ can use methodology from Pahlavi tool to merge dictionary and frequency data
-## but first need to solve the problem of how to prettily return multiple dataframes (per above)
+# addiing the frequency data into the dictionary
+
+# need to turn the transcribed word into a unique identifier (will lose some data):
+concat_dics_clean = concat_dics.drop_duplicates(subset=['Emic_Term'], keep='first')
+
+# merge with frequency data based on the unique identifier:
+merged_dics_freq = pd.merge(left=concat_dics_clean, right=freq_dic, how='left', left_on='Emic_Term', right_on='index')
+
+# clean up for readability
+cleaned_merged_dics_freq = merged_dics_freq.drop(columns=['index']).rename(columns={'Token': 'Frequency'})
+
+#cleaned_merged_dics_freq.sample(5)
+
+# ?? how to get rid of those decimal points / why did they enter in the first place?
+
+
+# ### Get Definition with Frequency
+
+# In[190]:
+
+
+def dic_freq (term):
+    query_mask = cleaned_merged_dics_freq["Emic_Term"].str.contains(term, na=False)
+    query = cleaned_merged_dics_freq[query_mask]
+    result = query.sort_values('Frequency', ascending=False).head()
+    return (result)
+    
+
+
+# In[196]:
+
+
+#dic_freq('چ.ر$')
 
 
 # ## Conditional Frequency
 
-# In[131]:
+# In[152]:
 
 
 def confreq (term, group=False):
@@ -285,7 +376,7 @@ def confreq (term, group=False):
     
 
 
-# In[225]:
+# In[153]:
 
 
 #confreq("اژدها", group = True)
@@ -293,13 +384,13 @@ def confreq (term, group=False):
 
 # ---
 
-# In[226]:
+# In[154]:
 
 
 tool_help()
 
 
-# In[227]:
+# In[155]:
 
 
 list_corpora()
@@ -307,7 +398,7 @@ list_corpora()
 
 # ---
 
-# In[242]:
+# In[156]:
 
 
 # next steps:
