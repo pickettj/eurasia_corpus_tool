@@ -5,14 +5,14 @@
 
 # ### Libraries
 
-# In[8]:
+# In[13]:
 
 
 import arabic_cleaning as ac
 import pandas as pd
 
 
-# In[9]:
+# In[14]:
 
 
 import nltk, glob, os, pickle
@@ -22,7 +22,7 @@ import nltk, glob, os, pickle
 
 # Home Directory
 
-# In[10]:
+# In[15]:
 
 
 #set home directory path
@@ -40,7 +40,7 @@ pickle_path = hdir + "/Dropbox/Active_Directories/Digital_Humanities/Corpora/pic
 
 # ##### Pre-existing Corpora
 
-# In[11]:
+# In[16]:
 
 
 # Indic Narrative
@@ -64,14 +64,14 @@ turk_path = ext_corp_path + "/turkic_corpora"
 
 # ##### Self-created Corpora
 
-# In[12]:
+# In[17]:
 
 
 # Indian Narrative
-indo_man_path = int_corp_path + "/non-machine-readable_notes/indian_manuscripts"
+indo_man_path = int_corp_path + "/non-machine-readable_notes/india_manuscripts"
 
 # Transoxania Narrative
-trans_man_path = int_corp_path + "/non-machine-readable_notes/bactriana_notes"
+trans_man_path = int_corp_path + "/non-machine-readable_notes/transoxania_manuscripts"
 
 # Transoxania Documents
 trans_man_docs_path = int_corp_path + "/xml_notes_stage3_final/bukhara_xml"
@@ -94,7 +94,7 @@ misc_man_docs_path = int_corp_path + "/xml_notes_stage3_final/misc_xml"
 
 # ##### Unorganized Documents
 
-# In[13]:
+# In[18]:
 
 
 # Converted to XML, pre-sorted, Stage 2
@@ -120,7 +120,7 @@ md_backlog_path = int_corp_path + "/transcription_markdown_drafting_stage1/docum
 # #### Indic Narrative
 # Thackston corpus
 
-# In[14]:
+# In[19]:
 
 
 indo_corpus_files = glob.glob(indo_path + r'//**/*.txt', recursive=True)
@@ -138,7 +138,7 @@ for longname in indo_corpus_files:
 
 # #### Transoxania Narrative
 
-# In[15]:
+# In[20]:
 
 
 trans_corpus_files = glob.glob(trans_path + r'//**/*.txt', recursive=True)
@@ -152,7 +152,7 @@ for longname in trans_corpus_files:
     trans_corpus[short[0]] = txt
     
     
-#trans_corpus.keys()
+trans_corpus.keys()
 
 
 # #### Persian Literature
@@ -160,7 +160,7 @@ for longname in trans_corpus_files:
 
 # #### Khiva Documents
 
-# In[16]:
+# In[21]:
 
 
 khiva_corpus_files = glob.glob(khiva_path + r'//**/*.txt', recursive=True)
@@ -189,7 +189,7 @@ for longname in khiva_corpus_files:
 
 # #### Indic Narrative
 
-# In[17]:
+# In[22]:
 
 
 indo_man_files = glob.glob(indo_man_path + r'//**/*.txt', recursive=True)
@@ -209,10 +209,10 @@ for longname in indo_man_files:
 # #### Transoxania Narrative
 # Corpus based on partially transcribed manuscripts from early modern Transoxania.
 
-# In[18]:
+# In[23]:
 
 
-trans_man_files = glob.glob(trans_man_path + r'/*.txt')
+trans_man_files = glob.glob(trans_man_path + r'//**/*.txt', recursive=True)
 
 trans_man = {}
 for longname in trans_man_files:
@@ -223,13 +223,13 @@ for longname in trans_man_files:
     short = os.path.splitext(start)
     trans_man[short[0]] = txt
 
-trans_man.keys()
+#trans_man.keys()
 
 
 # #### Transoxania Documents
 # Qushbegi documents at XML stage
 
-# In[19]:
+# In[24]:
 
 
 trans_man_doc_files = glob.glob(trans_man_docs_path + r'/*.xml')
@@ -248,7 +248,7 @@ trans_man_docs.keys()
 
 # #### Hyderabad Documents
 
-# In[20]:
+# In[25]:
 
 
 # Hyderabad Documents
@@ -271,7 +271,7 @@ hyd_man_docs.keys()
 # #### Indic Documents
 # Misc. Indic documents other than those from the Nizam State collection
 
-# In[21]:
+# In[26]:
 
 
 ind_man_doc_files = glob.glob(indo_man_docs_path + r'/*.xml')
@@ -293,7 +293,7 @@ ind_man_docs.keys()
 
 # #### XML, pre-sorted
 
-# In[22]:
+# In[27]:
 
 
 xml_presort_files = glob.glob(parser_xml_path + r'/*.xml')
@@ -310,7 +310,7 @@ for longname in xml_presort_files:
 xml_presort_docs.keys()
 
 
-# In[23]:
+# In[28]:
 
 
 xml_updated_files = glob.glob(updated_docs_path + r'/*.xml')
@@ -329,7 +329,7 @@ xml_updated_docs.keys()
 
 # #### XML, old system
 
-# In[24]:
+# In[29]:
 
 
 xml_oldsys_files = glob.glob(xml_old_sys_path + r'//**/*.xml', recursive=True)
@@ -348,7 +348,7 @@ xml_oldsys_docs.keys()
 
 # ### Pickling XML Corpora
 
-# In[25]:
+# In[30]:
 
 
 # Merges
@@ -362,7 +362,7 @@ combo_xml_all = {**combo_xml_final, **xml_oldsys_docs, **xml_presort_docs, **xml
 combo_xml_all.keys()
 
 
-# In[26]:
+# In[31]:
 
 
 # No need to pickle sub-directories of unsorted XML files
@@ -373,7 +373,7 @@ with open(pickle_path + "/xml_corpora.pkl", "wb") as f:
 # #### Markdown Stage
 # Transcribed docs, yet to be ported over to XML
 
-# In[27]:
+# In[32]:
 
 
 markdown_files = glob.glob(markdown_path + r'/*.xml')
@@ -393,7 +393,7 @@ markdown_docs.keys()
 
 # #### Markdown, old system
 
-# In[28]:
+# In[33]:
 
 
 markdown_old_files = glob.glob(md_backlog_path + r'//**/*.txt', recursive=True)
@@ -415,7 +415,7 @@ markdown_old_docs.keys()
 # 
 # *Corpus pre-cleaned, tokenized, and pickled from a separate script. (Cleaning takes a long time; and this corpus doesn't change very often, and so does not need to be re-run.)*
 
-# In[29]:
+# In[34]:
 
 
 f = open(perslit_path + '/persian_lit_toks.pkl', 'rb') 
@@ -424,7 +424,7 @@ pers_lit_toks = pickle.load(f)
 f.close()
 
 
-# In[30]:
+# In[35]:
 
 
 #pers_lit_toks.keys()
@@ -436,7 +436,7 @@ f.close()
 
 # ### Cleaning edited texts and notes
 
-# In[31]:
+# In[36]:
 
 
 # possible to do this once by iterating over the following? crashed computer last time...
@@ -476,14 +476,14 @@ clean_markdown_old_docs = {fn: ac.clean_document(doc) for fn, doc in markdown_ol
 
 # ## Tokenizing
 
-# In[32]:
+# In[37]:
 
 
 #apparently this dependency is needed for below
-nltk.download('punkt')
+#nltk.download('punkt')
 
 
-# In[33]:
+# In[38]:
 
 
 
@@ -561,13 +561,13 @@ for (fn, txt) in clean_markdown_old_docs.items():
 
 # *First-stage combinations*: Collapse unsorted documents
 
-# In[34]:
+# In[39]:
 
 
 unsorted_doc_toks = {**presort_xml_toks, **oldsys_xml_toks, **md_stage_toks, **md_oldsys_toks}
 
 
-# In[35]:
+# In[40]:
 
 
 #unsorted_doc_toks['ser560']
@@ -575,13 +575,13 @@ unsorted_doc_toks = {**presort_xml_toks, **oldsys_xml_toks, **md_stage_toks, **m
 
 # ### Pickling Corpora
 
-# In[36]:
+# In[41]:
 
 
 pickle_path = hdir + "/Dropbox/Active_Directories/Digital_Humanities/Corpora/pickled_tokenized_cleaned_corpora"
 
 
-# In[37]:
+# In[42]:
 
 
 with open(pickle_path + "/corpora.pkl", "wb") as f:
@@ -594,7 +594,7 @@ with open(pickle_path + "/corpora.pkl", "wb") as f:
 
 
 
-# In[38]:
+# In[43]:
 
 
 #trans_nar_toks["ziyarat_bukhara_kazan_manuscript_ser492"]
@@ -605,7 +605,7 @@ df['Text']='title'
 
 # ### Corpus Formation: Dataframes
 
-# In[39]:
+# In[44]:
 
 
 # External Corpora Toks
@@ -647,7 +647,7 @@ concat_md_oldsys_toks = sum([[("md_oldsys_toks", text, idx, tok) for idx, tok in
 
 
 
-# In[40]:
+# In[45]:
 
 
 # Persian Lit
@@ -656,14 +656,14 @@ concat_pers_lit_toks = sum([[("pers_lit_toks", text, idx, tok) for idx, tok in e
 
 
 
-# In[41]:
+# In[46]:
 
 
 # just delete the 'test' column above; do the different categories separately, manually specifying the category
 # then just concat them all together at the end.
 
 
-# In[42]:
+# In[47]:
 
 
 #concat_indo_nar[0:10]
@@ -672,31 +672,31 @@ concat = concat_indo_nar_ext_toks + concat_trans_nar_ext_toks + concat_khiva_doc
 
 
 
-# In[43]:
+# In[48]:
 
 
 concat = concat + concat_pers_lit_toks
 
 
-# In[44]:
+# In[49]:
 
 
 df = pd.DataFrame(concat, columns = ["Category", "Text", "No", "Token"])
 
 
-# In[51]:
+# In[50]:
 
 
 df.sample()
 
 
-# In[52]:
+# In[51]:
 
 
 df.to_csv(os.path.join(pickle_path,r'eurasia_corpus.csv'), index=False)
 
 
-# In[53]:
+# In[52]:
 
 
 df[5:10]
