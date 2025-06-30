@@ -25,3 +25,23 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Virtual documents (likely IDE/editor generated)
+.virtual_documents/
+
+# Anaconda projects
+anaconda_projects/
+
+# Other common Python/IDE files to ignore
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+.coverage
+.env
