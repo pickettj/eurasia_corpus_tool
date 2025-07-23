@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Read in Plain Text Persianate Eurasia Historical Corpus
 """
