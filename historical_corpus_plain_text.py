@@ -85,9 +85,10 @@ def _clean_dictionary_values(data_dict):
 Public API Functions
 """
 
-def get_corpus(clean=True):
+def _get_corpus(clean=True):
     """
-    Get the text corpus dictionary.
+    Internal function to get the text corpus dictionary.
+    Not meant to be called directly - use search_corpus() instead.
     
     Args:
         clean: If True, return cleaned text; if False, return raw text
@@ -124,14 +125,56 @@ def search_corpus(regex_pattern, additional_chars=30, use_clean=True):
     Returns:
         dict: Search results with context
     """
-    corpus = get_corpus(clean=use_clean)
-    return reg_text_search(corpus, regex_pattern, additional_chars)
+    corpus = _get_corpus(clean=use_clean)
+    return _reg_text_search(corpus, regex_pattern, additional_chars)
+
+def corpus_info():
+    """
+    Display statistics about the corpus without printing all content.
+    
+    Returns:
+        None (prints formatted statistics)
+    """
+    corpus = _get_corpus(clean=False)
+    
+    print("\n" + "=" * 70)
+    print("📚 CORPUS STATISTICS")
+    print("=" * 70)
+    print(f"Total documents: {len(corpus)}")
+    
+    # Count file types
+    txt_count = sum(1 for k in corpus.keys() if k.endswith('.txt'))
+    md_count = sum(1 for k in corpus.keys() if k.endswith('.md'))
+    xml_count = sum(1 for k in corpus.keys() if k.endswith('.xml'))
+    
+    print(f"\nDocument types:")
+    print(f"  • .txt files: {txt_count}")
+    print(f"  • .md files: {md_count}")
+    print(f"  • .xml files: {xml_count}")
+    
+    # Calculate total character count
+    total_chars = sum(len(text) for text in corpus.values())
+    print(f"\nTotal characters: {total_chars:,}")
+    print(f"Average document length: {total_chars // len(corpus):,} characters")
+    
+    # Show sample filenames
+    print(f"\nSample documents (first 10):")
+    for i, filename in enumerate(list(corpus.keys())[:10], 1):
+        doc_length = len(corpus[filename])
+        print(f"  {i:2d}. {filename:50s} ({doc_length:,} chars)")
+    
+    if len(corpus) > 10:
+        print(f"  ... and {len(corpus) - 10} more documents")
+    
+    print("=" * 70)
+    print("💡 Use search_corpus(pattern) to search within documents")
+    print("=" * 70 + "\n")
 
 """
 Utility Functions
 """
 
-def reg_text_search(data_dict, regex_pattern, additional_chars=30):
+def _reg_text_search(data_dict, regex_pattern, additional_chars=30):
     """
     Find regex matches in dictionary values and return them with surrounding context.
     
@@ -174,7 +217,7 @@ def md_report(matches_dict, inbox_path=None):
     Generate a timestamped Markdown report from regex search results.
     
     Args:
-        matches_dict: Nested dict from reg_text_search with match results
+        matches_dict: Nested dict from _reg_text_search with match results
         inbox_path: Directory to save report (default: current directory)
     
     Returns:
